@@ -77,6 +77,7 @@ function applyFilter(filterButton) {
     selectedCard.classList.remove("collection-card--selected");
     selectedCard.setAttribute("aria-pressed", "false");
     selectedCard = null;
+
     detailsTitle.textContent = initialTitle;
     detailsDescription.textContent = initialDescription;
   }
@@ -87,6 +88,26 @@ filterButtons.forEach(filterButton => {
     applyFilter(filterButton);
   });
 });
+
+const randomButton = document.getElementById("random-button");
+
+function pickRandomCard() {
+  const visibleCards = Array.from(cards).filter(card =>
+    !card.classList.contains("collection-card--hidden")
+  );
+
+  let candidates = visibleCards.filter(card => card !== selectedCard);
+
+  if (candidates.length === 0) {
+    candidates = visibleCards;
+  }
+
+  const index = Math.floor(Math.random() * candidates.length);
+
+  selectCard(candidates[index]);
+}
+
+randomButton.addEventListener("click", pickRandomCard);
 
 // Этап 4. Найдите кнопки фильтров.
 // Показывайте подходящие карточки, обновляйте активную кнопку и счетчик.
