@@ -13,6 +13,9 @@ const detailsPanel = document.getElementById("details-panel");
 const detailsTitle = document.getElementById("details-title");
 const detailsDescription = document.getElementById("details-description");
 
+const initialTitle = detailsTitle.textContent;
+const initialDescription = detailsDescription.textContent;
+
 let selectedCard = null;
 
 function selectCard(card) {
@@ -37,6 +40,53 @@ function selectCard(card) {
 cards.forEach(card => (card.addEventListener("click", () => {
   selectCard(card);
 })))
+
+
+const filterButtons = document.querySelectorAll(".filter-button");
+const visibleCount = document.getElementById("visible-count");
+
+let activeFilterButton = document.querySelector(".filter-button--active");
+
+function applyFilter(filterButton) {
+  let visible = 0;
+
+  cards.forEach(card => {
+    const isVisible = filterButton.dataset.filter === "all" 
+    || card.dataset.category === filterButton.dataset.filter;
+
+    card.classList.toggle("collection-card--hidden", !isVisible);
+    if (isVisible) visible++;
+  });
+
+  visibleCount.textContent = visible;
+
+
+   if (activeFilterButton !== null) {
+    activeFilterButton.classList.remove("filter-button--active");
+    activeFilterButton.setAttribute("aria-pressed", "false");
+  }
+
+  filterButton.classList.add("filter-button--active");
+  filterButton.setAttribute("aria-pressed", "true");
+
+  activeFilterButton = filterButton;
+
+  if (selectedCard !== null && 
+    selectedCard.classList.contains("collection-card--hidden")) {
+
+    selectedCard.classList.remove("collection-card--selected");
+    selectedCard.setAttribute("aria-pressed", "false");
+    selectedCard = null;
+    detailsTitle.textContent = initialTitle;
+    detailsDescription.textContent = initialDescription;
+  }
+}
+
+filterButtons.forEach(filterButton => {
+  filterButton.addEventListener("click", () => {
+    applyFilter(filterButton);
+  });
+});
 
 // Этап 4. Найдите кнопки фильтров.
 // Показывайте подходящие карточки, обновляйте активную кнопку и счетчик.
