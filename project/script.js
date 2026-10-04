@@ -42,16 +42,31 @@ cards.forEach(card => (card.addEventListener("click", () => {
 })))
 
 
+
 const filterButtons = document.querySelectorAll(".filter-button");
 const visibleCount = document.getElementById("visible-count");
 
+const allButton = Array.from(filterButtons).find(
+  button => button.dataset.filter === "all"
+);
+
 let activeFilterButton = document.querySelector(".filter-button--active");
+
+
+function clearSelection() {
+  selectedCard.classList.remove("collection-card--selected");
+  selectedCard.setAttribute("aria-pressed", "false");
+  selectedCard = null;
+
+  detailsTitle.textContent = initialTitle;
+  detailsDescription.textContent = initialDescription;
+}
 
 function applyFilter(filterButton) {
   let visible = 0;
 
   cards.forEach(card => {
-    const isVisible = filterButton.dataset.filter === "all" 
+    const isVisible = filterButton === allButton
     || card.dataset.category === filterButton.dataset.filter;
 
     card.classList.toggle("collection-card--hidden", !isVisible);
@@ -73,13 +88,7 @@ function applyFilter(filterButton) {
 
   if (selectedCard !== null && 
     selectedCard.classList.contains("collection-card--hidden")) {
-
-    selectedCard.classList.remove("collection-card--selected");
-    selectedCard.setAttribute("aria-pressed", "false");
-    selectedCard = null;
-
-    detailsTitle.textContent = initialTitle;
-    detailsDescription.textContent = initialDescription;
+      clearSelection();
   }
 }
 
@@ -88,6 +97,8 @@ filterButtons.forEach(filterButton => {
     applyFilter(filterButton);
   });
 });
+
+
 
 const randomButton = document.getElementById("random-button");
 
@@ -108,6 +119,21 @@ function pickRandomCard() {
 }
 
 randomButton.addEventListener("click", pickRandomCard);
+
+
+
+
+const resetButton = document.getElementById("reset-button");
+
+function resetAll() {
+  applyFilter(allButton);
+
+  if(selectedCard != null) {
+    clearSelection();
+  }
+}
+
+resetButton.addEventListener("click", resetAll);
 
 // Этап 4. Найдите кнопки фильтров.
 // Показывайте подходящие карточки, обновляйте активную кнопку и счетчик.
