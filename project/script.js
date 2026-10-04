@@ -8,6 +8,36 @@
 // Этап 3. Найдите карточки и элементы панели подробностей.
 // Реализуйте одну общую функцию выбора карточки.
 
+const cards = document.querySelectorAll(".collection-card");
+const detailsPanel = document.getElementById("details-panel");
+const detailsTitle = document.getElementById("details-title");
+const detailsDescription = document.getElementById("details-description");
+
+let selectedCard = null;
+
+function selectCard(card) {
+  detailsTitle.textContent = card.dataset.title;
+  detailsDescription.textContent = card.dataset.description;
+
+  if (selectedCard !== null) {
+    selectedCard.classList.remove("collection-card--selected");
+    selectedCard.setAttribute("aria-pressed", "false");
+  }
+
+  card.classList.add("collection-card--selected");
+  card.setAttribute("aria-pressed", "true");
+
+  selectedCard = card;
+
+  detailsPanel.classList.remove("details-panel--pulse");
+  void detailsPanel.offsetWidth;
+  detailsPanel.classList.add("details-panel--pulse");
+}
+
+cards.forEach(card => (card.addEventListener("click", () => {
+  selectCard(card);
+})))
+
 // Этап 4. Найдите кнопки фильтров.
 // Показывайте подходящие карточки, обновляйте активную кнопку и счетчик.
 // Учтите случай, когда новый фильтр скрывает выбранную карточку.
